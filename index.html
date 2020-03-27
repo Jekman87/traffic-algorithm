@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <h1>Тест нового алгоритма распределения лидов по странам</h1>
+
+        <div class="left-content content">
+            <div class="buttons">
+                <button id="one-lead">Распределить 1 лида</button>
+                <button id="ten-lead">Распределить 10 лидов</button>
+                <button id="hundred-lead">Распределить 100 лидов</button>
+                <button id="clear-btn" onclick="location.reload()">Очистить таблицы</button>
+            </div>
+            <div id="incoming-traffic">
+                <table id="traffic-table" border="1">
+                    <caption>Входящий трафик по странам</caption>
+                    <thead>
+                        <tr>
+                            <th>Страна</th>
+                            <th>Количество</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>По всем странам</td>
+                            <td class="summ">0</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="right-content content">
+            <div id="country-distribution">
+                <h2>Распределение трафика по партнерам</h2>
+                
+            </div>
+        </div>
+        <div style="clear: both;"></div>
+        
+    </div>
+    
+
+    
+    <script src="script.js"></script>
+</body>
+</html>

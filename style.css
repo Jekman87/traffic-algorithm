@@ -1,0 +1,68 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.wrapper {
+    width: 800px;
+    margin: auto;
+}
+
+h1 {
+    font-size: 30px;
+    text-align: center;
+    margin: 20px 0 40px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+button {
+    display: block;
+    background-color: blue;
+    color: white;
+    padding: 10px;
+    width: 190px;
+    margin-bottom: 10px;
+}
+
+.selected {
+    background: orange;
+}
+
+.summ {
+    background: red;
+    color: white;
+}
+
+.content {
+    display: inline-block;
+}
+
+.left-content {
+    float: left;
+}
+
+.right-content {
+    float: right;
+}
+
+table {
+    margin: 0 auto 20px;
+    min-width: 300px;
+}
+
+caption {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+td, th {
+    padding: 3px 5px;
+}
+
+td + td {
+    text-align: right;
+}
