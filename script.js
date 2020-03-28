@@ -133,15 +133,17 @@ function newTrafficAlgorithm(country) {
 
     }
 
-    //Ищем максимальную цифру полученных лидов
-    const maxReceived = users.reduce(
-        (acc, curr) => acc.received > curr.received ? acc : curr
-    ).received;
+    //Ищем максимальную и минимальную цифру полученных лидов
+    let maxReceived = users[0].received;
+    let minReceived = users[0].received;
 
-    //Ищем минимальную цифру полученных лидов
-    const minReceived = users.reduce(
-        (acc, curr) => acc.received < curr.received ? acc : curr
-    ).received;
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].received > maxReceived) {
+            maxReceived = users[i].received;
+        } else if (users[i].received < minReceived) {
+            minReceived = users[i].received;
+        }
+    }
 
     //Если разница больше или равно максимальной разницы в полученных лидах (maxDiff),
     //значит распределяем среди тех, кто получил меньше всего
