@@ -110,6 +110,8 @@ function oldTrafficAlgorithm(country) {
 function newTrafficAlgorithm(country) {
     const indexArrOfUserSelectCountry = [];
     const indexArrOfMinReceived = [];
+    let maxReceived = users[0].received;
+    let minReceived = users[0].received;
 
     //Собираем все индексы ползователей, которые выбрали страну пришедшего лида
     users.forEach((user, index) => {
@@ -134,30 +136,28 @@ function newTrafficAlgorithm(country) {
     }
 
     //Ищем максимальную и минимальную цифру полученных лидов
-    let maxReceived = users[0].received;
-    let minReceived = users[0].received;
-
     for (let i = 0; i < users.length; i++) {
+        
         if (users[i].received > maxReceived) {
             maxReceived = users[i].received;
         } else if (users[i].received < minReceived) {
             minReceived = users[i].received;
         }
+
     }
+
+    //Собираем в массив индексы пользователей с минимумом полученных лидов
+    users.forEach((user, index) => {
+
+        if (user.received === minReceived) {
+            indexArrOfMinReceived.push(index);
+        }
+
+    });
 
     //Если разница больше или равно максимальной разницы в полученных лидах (maxDiff),
     //значит распределяем среди тех, кто получил меньше всего
     if (maxReceived - minReceived >= maxDiff) {
-
-        //Собираем в массив индексы пользователей с минимумом полученных лидов
-        users.forEach((user, index) => {
-
-            if (user.received === minReceived) {
-                indexArrOfMinReceived.push(index);
-            }
-
-        });
-
         //Ищем первое пересечение в массивах
         let intersectionIndex = intersection(indexArrOfUserSelectCountry, indexArrOfMinReceived);
 
@@ -170,7 +170,6 @@ function newTrafficAlgorithm(country) {
         }
 
     } else {
-
         //Если разница меньше 3, проверяем не пустой ли массив выбранных стран
         //Если не пустой, тогда в нем находим кандидата с минимальным количеством лидов и отдаем ему
         if (indexArrOfUserSelectCountry.length) {
