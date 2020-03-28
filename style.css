@@ -4,7 +4,7 @@
 }
 
 .wrapper {
-    width: 800px;
+    width: 1000px;
     margin: auto;
 }
 
@@ -15,7 +15,17 @@ h1 {
 }
 
 h2 {
+    text-align: center;
+}
+
+p {
     margin-bottom: 20px;
+    text-align: center;
+}
+
+.buttons p {
+    margin: 10px 0 5px 0;
+    text-align: left;
 }
 
 button {
@@ -37,16 +47,12 @@ button {
 }
 
 .content {
-    display: inline-block;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
-.left-content {
-    float: left;
-}
 
-.right-content {
-    float: right;
-}
 
 table {
     margin: 0 auto 20px;

@@ -12,29 +12,29 @@ const countries = [
 ];
 
 const users = [
-    {name: 'Вася Путин', countries: ['Россия']},
-    {name: 'Дима Лукашенко', countries: ['Беларусь', 'Россия']},
-    {name: 'Петя Порошенко', countries: ['Украина', 'Италия']},
-    {name: 'Степа Пермяков', countries: ['Украина', 'Италия', 'Франция']},
-    {name: 'Коля Петросян', countries: ['Казахстан']},
-    {name: 'Виктор Петров', countries: ['Беларусь', 'Узбекистан']},
-    {name: 'Петр Степанов', countries: ['Италия', 'Россия']},
-    {name: 'Зина Туркменистановна', countries: ['Туркменистан']},
-    {name: 'Лида Терешкова', countries: ['Узбекистан']},
-    {name: 'Катя Катит', countries: ['Беларусь']},
+    {name: 'Вася Путин', received: 0, countries: ['Россия']},
+    {name: 'Дима Лукашенко', received: 0, countries: ['Беларусь', 'Россия']},
+    {name: 'Петя Порошенко', received: 0, countries: ['Украина', 'Италия']},
+    {name: 'Степа Зеленский', received: 0, countries: ['Украина', 'Италия', 'Франция']},
+    {name: 'Коля Назарбаев', received: 0, countries: ['Казахстан']},
+    {name: 'Витя Берлузкони', received: 0, countries: ['Италия', 'Франция']},
+    {name: 'Валера Кеннеди', received: 0, countries: []},
+    {name: 'Виталя Черчилль', received: 0, countries: ['Италия', 'Россия']},
+    {name: 'Зина Трамп', received: 0, countries: ['Туркменистан']},
+    {name: 'Лида Обама', received: 0, countries: ['Узбекистан']},
+    {name: 'Катя Меркель', received: 0, countries: ['Беларусь']},
+    {name: 'Галя Горбачева', received: 0, countries: []},
 ];
 
-
-
+let order = 0;
+let maxDiff = 3;
 
 $(function() {
     initContent();
     addLidsEvent($('#one-lead'), 1);
     addLidsEvent($('#ten-lead'), 10);
     addLidsEvent($('#hundred-lead'), 100);
-
 });
-
 
 function initContent() {
 
@@ -74,10 +74,16 @@ function addLidsEvent(el, count) {
             let counter = $(`#traffic-table tbody tr:eq(${leadNumber}) td + td`);
             counter.text(+counter.text() + 1);
 
-            let summ = $('#traffic-table tfoot tr td + td');
+            let summ = $('#traffic-table tfoot td + td');
             summ.text(+summ.text() + 1);
 
-            trafficAlgorithm(countries[leadNumber]);
+            maxDiff = $("input[type=text]").val();
+
+            if ($("input[type=radio]:checked").val() === 'old') {
+                oldTrafficAlgorithm(countries[leadNumber]);
+            } else {
+                newTrafficAlgorithm(countries[leadNumber]);
+            }
         }
     });
 }
@@ -86,6 +92,112 @@ function getLeadNumber() {
     return Math.floor(Math.random() * countries.length);
 }
 
-function trafficAlgorithm(country) {
-    console.log(country);
+function oldTrafficAlgorithm(country) {
+    let tBody = $(`#country-distribution table:eq(${order}) tbody`);
+    let rows = tBody.find(`tr td:first-child:contains('${country}')`);
+  
+    if (rows.text()) {
+        let counter = rows.next();
+        counter.text(+counter.text() + 1);
+    } else {
+        tBody.append(`<tr><td>${country}</td><td>1</td></tr>`)
+    }
+
+    tBody.next().find('.summ').text(++users[order].received);
+    order = ++order % users.length;
+}
+
+function newTrafficAlgorithm(country) {
+    const indexArrOfUserSelectCountry = [];
+    const indexArrOfMinReceived = [];
+
+    //Собираем все индексы ползователей, которые выбрали страну пришедшего лида
+    users.forEach((user, index) => {
+
+        if (user.countries.includes(country)) {
+            indexArrOfUserSelectCountry.push(index);
+        }
+
+    });
+
+    //Если нет таких пользователе, значит лид идет тем, у кого не выбраны страны
+    if (!indexArrOfUserSelectCountry.length) {
+
+        users.forEach((user, index) => {
+
+            if (!user.countries.length) {
+                indexArrOfUserSelectCountry.push(index);
+            }
+
+        });
+
+    }
+
+    //Ищем максимальную цифру полученных лидов
+    const maxReceived = users.reduce(
+        (acc, curr) => acc.received > curr.received ? acc : curr
+    ).received;
+
+    //Ищем минимальную цифру полученных лидов
+    const minReceived = users.reduce(
+        (acc, curr) => acc.received < curr.received ? acc : curr
+    ).received;
+
+    //Если разница больше или равно максимальной разницы в полученных лидах (maxDiff),
+    //значит распределяем среди тех, кто получил меньше всего
+    if (maxReceived - minReceived >= maxDiff) {
+
+        //Собираем в массив индексы пользователей с минимумом полученных лидов
+        users.forEach((user, index) => {
+
+            if (user.received === minReceived) {
+                indexArrOfMinReceived.push(index);
+            }
+
+        });
+
+        //Ищем первое пересечение в массивах
+        let intersectionIndex = intersection(indexArrOfUserSelectCountry, indexArrOfMinReceived);
+
+        //Если среди минимумов есть индексы для стран, отдаем лида первому из стран
+        if (intersectionIndex) {
+            order = intersectionIndex;
+        } else {
+            //Если нет, отдаем первому среди минимумов
+            order = indexArrOfMinReceived[0];
+        }
+
+    } else {
+
+        //Если разница меньше 3, проверяем не пустой ли массив выбранных стран
+        //Если не пустой, тогда в нем находим кандидата с минимальным количеством лидов и отдаем ему
+        if (indexArrOfUserSelectCountry.length) {
+            order = indexArrOfUserSelectCountry.reduce(
+                (acc, curr) => users[acc].received <= users[curr].received ? acc : curr
+            );
+        } else {
+            //Если пустой (все выбрали какую-то страну, но лид не подходит ни под одну из них)
+            //Просто отдаем первому из тех, кто получил меньше всего лидов
+            order = indexArrOfMinReceived[0];
+        }
+
+    }
+
+    //Просто рендеринг через старый метод)
+    oldTrafficAlgorithm(country);
+}
+
+
+function intersection(arr1, arr2) {
+    let idx = 0;
+   
+    for (let i = 0; i < arr1.length; i++) {
+        idx = arr2.indexOf(arr1[i]);
+
+        if (idx !== -1) {
+            return arr1[i];
+        };
+    }
+
+    return false;
 }
